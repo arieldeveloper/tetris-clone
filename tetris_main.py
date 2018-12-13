@@ -1,8 +1,8 @@
 #########################################
 # Programmer: Ariel Chouminov
-# Date: 04/12/2016
-# File Name: tetris_template3.py
-# Description: This program is the third game template for our Tetris game.
+# Date: 12/12/18
+# File Name: tetris_main.py
+# Description: Tetris Game clone 
 #########################################
 from tetris_classes import *
 from random import randint
