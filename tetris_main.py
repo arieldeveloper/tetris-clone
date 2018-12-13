@@ -1,8 +1,8 @@
 #########################################
 # Programmer: Ariel Chouminov
-# Date: 12/12/18
-# File Name: tetris_main.py
-# Description: Tetris Game clone 
+# Date: 04/12/2016
+# File Name: tetris_template3.py
+# Description: This program is the third game template for our Tetris game.
 #########################################
 from tetris_classes import *
 from random import randint
@@ -92,7 +92,7 @@ leftWall = Wall(LEFT-1, TOP, ROWS)
 rightWall = Wall(RIGHT, TOP, ROWS)
 obstacles = Obstacles(LEFT, FLOOR)
 ghostShape = Shadow(COLUMNS / 2 + COLUMNS, 1, shapeNo)
-gameOverBlock = Shape(COLUMNS / 2 + COLUMNS, 1, 7)
+
 
 #For hold and next features
 holdShape = 1
@@ -117,6 +117,11 @@ def reset(score, lines, level, tetris, shape, ghostShape, obstacles) :
     obstacles.clear()
     obstacles = Obstacles(LEFT, FLOOR)
     score = 0
+
+    holdShape = 1
+    hold = False
+    nextShapes = [randint(1,7), randint(1,7)]
+
 
 def buttonClickedDetection(leftX, rightX, upY, downY):
     """
@@ -204,7 +209,7 @@ def redraw_screen():
     shape.draw(screen, GRIDSIZE)
     ghostShape.draw(screen, GRIDSIZE)
     obstacles.draw(screen, GRIDSIZE)
-#    gameOverBlock.draw(screen, GRIDSIZE)
+
     listOfShapeImages = [shapeBackZ,shapeZ,shapeL, shapeBackL, shapeLine, shapeArrow, shapeSquare]
 
     #Code for next and hold features
@@ -377,39 +382,73 @@ while inPlay:
                     nextShapes.append(randint(1,7))
                     shape = Shape(COLUMNS / 2 + COLUMNS, 1,  shapeNo)
                     hold = True
-
+        if keys[pygame.K_f]:
+            #Game over
+            score = 0
+            lines = 0
+            level = 1
+            tetris = False
+            obstacles.clear()
+            obstacles = Obstacles(LEFT, FLOOR)
+            score = 0
+            nextShapes.clear()
+            holdShape = 1
+            hold = False
+            nextShapes = [randint(1,7), randint(1,7)]
+            shapeNo = randint(1,7)
+            shape = Shape(COLUMNS / 2 + COLUMNS, 1, shapeNo)
+            ghostShape = Shadow(COLUMNS / 2 + COLUMNS, 1, shapeNo)
+            
+            mainScreen = False
+            gameOverScreen = True
         pygame.time.delay(50)
         slowTime += gameSpeed
 
         if slowTime % 10 == 0:
             shape.move_down()
             if shape.collides(obstacles) or shape.collides(floor):
-                if shape.collides(gameOverBlock):
+                if shape.row == 3:
+                    print("Game over")
                     #Game over
-                    reset(score, lines, level, tetris, shape, ghostShape, obstacles)
+                    score = 0
+                    lines = 0
+                    level = 1
+                    tetris = False
+                    obstacles.clear()
+                    obstacles = Obstacles(LEFT, FLOOR)
+                    score = 0
+                    nextShapes.clear()
+                    holdShape = 1
+                    hold = False
+                    nextShapes = [randint(1,7), randint(1,7)]
+                    shapeNo = randint(1,7)
+                    shape = Shape(COLUMNS / 2 + COLUMNS, 1, shapeNo)
+                    ghostShape = Shadow(COLUMNS / 2 + COLUMNS, 1, shapeNo)
+    
                     mainScreen = False
                     gameOverScreen = True
+                else:
+                    shape.move_up()
+                    obstacles.append(shape)
+                    fullRows = obstacles.findFullRows(TOP, FLOOR, COLUMNS)
+                    obstacles.removeFullRows(fullRows)
+                    #Adds score based on lines cleared
+                    if 0 < len(fullRows) < 4:
+                        score += 100 * len(fullRows)
+                        tetris = False
+                    elif len(fullRows) >= 4 and tetris == False:
+                        score += 800
+                        tetris = True
+                    elif len(fullRows) >= 4 and tetris == True:
+                        score += 800
+                    lines += len(fullRows)
                 
-                shape.move_up()
-                obstacles.append(shape)
-                fullRows = obstacles.findFullRows(TOP, FLOOR, COLUMNS)
-                obstacles.removeFullRows(fullRows)
-                #Adds score based on lines cleared
-                if 0 < len(fullRows) < 4:
-                    score += 100 * len(fullRows)
-                    tetris = False
-                elif len(fullRows) >= 4 and tetris == False:
-                    score += 800
-                    tetris = True
-                elif len(fullRows) >= 4 and tetris == True:
-                    score += 800
-                lines += len(fullRows)
-            
-                shapeNo = nextShapes[-2]
-                nextShapes.append(randint(1,7))
-                shape = Shape(COLUMNS / 2 + COLUMNS, 1, shapeNo)
-                ghostShape = Shadow(COLUMNS / 2 + COLUMNS, 1, shapeNo)
-                ghostShape.clr = 2
+                    shapeNo = nextShapes[-2]
+                    nextShapes.append(randint(1,7))
+                    shape = Shape(COLUMNS / 2 + COLUMNS, 1, shapeNo)
+                    ghostShape = Shadow(COLUMNS / 2 + COLUMNS, 1, shapeNo)
+                    ghostShape.clr = 2
+
 
         ghostShape.moveToBottom(floor, obstacles)
         redraw_screen()
@@ -421,7 +460,7 @@ while inPlay:
     if gameOverScreen:
         gameoverscreen()
             
-    pygame.time.delay(30)
+    pygame.time.delay(50)
     
 pygame.quit()
     
