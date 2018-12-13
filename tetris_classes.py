@@ -1,8 +1,8 @@
 #########################################
-# Programmer: Mrs.G
-# Date: 21/11/2015
-# File Name: tetris_classes5.py
-# Description: These classes are templates for writing a Tetris game.
+# Programmer: Ariel Chouminov
+# Date: 12/12/18
+# File Name: tetris_main.py
+# Description: Tetris Game clone 
 #########################################
 import pygame
 
