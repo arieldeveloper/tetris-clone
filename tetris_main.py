@@ -176,12 +176,7 @@ def gameoverscreen():
     pygame.display.update()
 
 
-def pausescreen():
-    global introScreen
-    global mainScreen
-    global gameOverScreen
-    global pauseScreen
-    
+def pausescreen(introScreen, mainScreen, gameOverScreen, pauseScreen):
     screen.blit(pauseScreenBackground, (0,0, WIDTH, HEIGHT))
     if pygame.mouse.get_pressed()[0]:
         mouse = pygame.mouse.get_pos()
@@ -206,6 +201,8 @@ def pausescreen():
         if buttonClickedDetection(quitBtnXLeft, quitBtnXRight, quitBtnYUp, quitBtnYDown):
             pauseScreen = False
             introScreen = True
+
+    return pauseScreen, mainScreen, introScreen
     pygame.display.update()
 
 #Main Functions
@@ -222,7 +219,7 @@ def redraw_screen():
     #Blit the background
     screen.blit(background, (0,0, WIDTH, HEIGHT))
 
-#Blit the time
+    #Blit the time
     currentTime += clock.tick(60) / 1000
     
     screen.blit(font.render("Time: " + str(int(currentTime)), 1, BLACK), (630,550))
@@ -268,9 +265,7 @@ def redraw_screen():
     #Update the display
     pygame.display.update()
 
-def introscreen():
-    global introScreen
-    global mainScreen
+def introscreen(introScreen, mainScreen):
     screen.blit(introBackground, (0,0, WIDTH, HEIGHT))
     backgroundMusic.stop()
     #Button Clicked detection
@@ -287,9 +282,12 @@ def introscreen():
             mainScreen = True
             backgroundMusic.play()
 
-inPlay = True
-while inPlay:
+    return introScreen, mainScreen
 
+inPlay = True
+
+while inPlay:
+    
     #Enters the intro screen
     if introScreen:
         #Game over
@@ -312,7 +310,7 @@ while inPlay:
         for event in eventsQuit:
             if event.type == pygame.QUIT:
                 inPlay = False
-        introscreen()
+        introScreen, mainScreen = introscreen(introScreen, mainScreen)
         pygame.display.update()
 
     #Enters the game screen
@@ -336,7 +334,6 @@ while inPlay:
                         shape.move_left()
                         ghostShape.update(shape)
 
-            
                     if shape.collides(leftWall) == True or shape.collides(obstacles) == True:
                         shape.move_right()
                         ghostShape.update(shape)
@@ -480,7 +477,9 @@ while inPlay:
         for event in events:
             if event.type == pygame.QUIT:
                 inPlay = False
-        pausescreen()
+    
+        pauseScreen, mainScreen, introScreen = pausescreen(introScreen, mainScreen, gameOverScreen, pauseScreen)
+
         pygame.display.update()
 
     if gameOverScreen:
