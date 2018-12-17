@@ -1,11 +1,11 @@
 #########################################
 # Programmer: Ariel Chouminov
-# Date: 12/12/18
+# Date: 04/12/2018
 # File Name: tetris_main.py
-# Description: Tetris Game clone 
+# Description: Tetris game, classes file
 #########################################
-import pygame
 
+import pygame
 BLACK     = (0, 0, 0)
 RED       = (255, 0, 0)
 GREEN     = (0, 255, 0)
@@ -20,7 +20,6 @@ COLOURS   = [ BLACK,  RED,  GREEN,  BLUE,  ORANGE,  CYAN,  MAGENTA,  YELLOW,  WH
 CLR_names = ['black','red','green','blue','orange','cyan','magenta','yellow','white']
 figures   = [None , 'Z' ,  'S'  ,  'J' ,  'L'   ,  'I' ,   'T'   ,   'O'  , None]
 
-#Shape Ima
 class Block(object):                    
     """ A square - basic building block used in all the other classes
         data:               behaviour:
@@ -36,12 +35,16 @@ class Block(object):
     def __str__(self):                  
         return '('+str(self.col)+','+str(self.row)+') '+CLR_names[self.clr]
 
-    def draw(self, surface, gridsize=20):                     
+    def draw(self, surface, listOfImages, gridsize=20):
         x = self.col * gridsize        
         y = self.row * gridsize
-        CLR = COLOURS[self.clr]
-        pygame.draw.rect(surface,CLR,(x,y,gridsize,gridsize), 0)
-        pygame.draw.rect(surface, WHITE,(x,y,gridsize+1,gridsize+1), 1)
+    
+        surface.blit(listOfImages[self.clr], (x, y, gridsize, gridsize))
+        
+
+#        CLR = COLOURS[self.clr]
+#        pygame.draw.rect(surface,CLR,(x,y,gridsize,gridsize), 0)
+#        pygame.draw.rect(surface, WHITE,(x,y,gridsize+1,gridsize+1), 1)
 
     def shadowDraw(self, surface, gridsize=20):
         x = self.col * gridsize
@@ -85,9 +88,9 @@ class Cluster(object):
             blockCLR = self.clr
             self.blocks[i]= Block(blockCOL, blockROW, blockCLR)
 
-    def draw(self, surface, gridsize):                     
+    def draw(self, surface, gridsize, listOfImages):
         for block in self.blocks:
-            block.draw(surface, gridsize)
+            block.draw(surface, listOfImages, gridsize)
 
     def collides(self, other):
         """ Compare each block from a cluster to all blocks from another cluster.
@@ -257,6 +260,7 @@ class Shadow(Shape):
 
     def update(self, other):
         self._rot = other._rot
+        self.row = other.row
         self.col = other.col
         self.clr = other.clr
         self._rotate()
