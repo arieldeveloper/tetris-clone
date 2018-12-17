@@ -97,6 +97,7 @@ img8 = pygame.image.load("Images/8.png").convert_alpha()
 
 imgWidth = 25
 imgHeight = 25
+
 img1 = pygame.transform.scale(img1, (imgWidth, imgHeight))
 img2 = pygame.transform.scale(img2, (imgWidth, imgHeight))
 img3 = pygame.transform.scale(img3, (imgWidth, imgHeight))
@@ -115,7 +116,6 @@ leftWall = Wall(LEFT-1, TOP, ROWS)
 rightWall = Wall(RIGHT, TOP, ROWS)
 obstacles = Obstacles(LEFT, FLOOR)
 ghostShape = Shadow(COLUMNS / 2 + COLUMNS, 1, shapeNo)
-
 
 #For hold and next features
 holdShape = 1
@@ -156,10 +156,7 @@ def buttonClickedDetection(leftX, rightX, upY, downY):
         if rightX > mouse[0] > leftX and downY > mouse[1] > upY:
             return True
 
-def gameoverscreen():
-    global introScreen
-    global gameOverScreen
-    
+def gameoverscreen(introScreen, gameOverScreen):
     screen.blit(gameOverBackground, (0,0, WIDTH, HEIGHT))
     if pygame.mouse.get_pressed()[0]:
         mouse = pygame.mouse.get_pos()
@@ -174,7 +171,7 @@ def gameoverscreen():
             introScreen = True
 
     pygame.display.update()
-
+    return introScreen, gameOverScreen
 
 def pausescreen(introScreen, mainScreen, gameOverScreen, pauseScreen):
     screen.blit(pauseScreenBackground, (0,0, WIDTH, HEIGHT))
@@ -206,15 +203,7 @@ def pausescreen(introScreen, mainScreen, gameOverScreen, pauseScreen):
     pygame.display.update()
 
 #Main Functions
-def redraw_screen():
-    global mainScreen
-    global gameOverScreen
-    global pauseScreen
-    global font
-    global score
-    global lines
-    global level
-    global currentTime
+def redraw_screen(mainScreen, gameOverScreen, pauseScreen, font, score, lines, level, currentTime):
     
     #Blit the background
     screen.blit(background, (0,0, WIDTH, HEIGHT))
@@ -264,7 +253,7 @@ def redraw_screen():
                 
     #Update the display
     pygame.display.update()
-
+    return mainScreen, gameOverScreen, pauseScreen, font, score, lines, level, currentTime
 def introscreen(introScreen, mainScreen):
     screen.blit(introBackground, (0,0, WIDTH, HEIGHT))
     backgroundMusic.stop()
@@ -470,7 +459,7 @@ while inPlay:
                     ghostShape = Shadow(COLUMNS / 2 + COLUMNS, 1, shapeNo)
 
         ghostShape.moveToBottom(floor, obstacles)
-        redraw_screen()
+        mainScreen, gameOverScreen, pauseScreen, font, score, lines, level, currentTime = redraw_screen(mainScreen, gameOverScreen, pauseScreen, font, score, lines, level, currentTime)
 
     if pauseScreen:
         events = pygame.event.get()
@@ -487,7 +476,7 @@ while inPlay:
         for event in events:
             if event.type == pygame.QUIT:
                 inPlay = False
-        gameoverscreen()
+        introScreen, gameOverScreen = gameoverscreen(introScreen, gameOverScreen)
             
     pygame.time.delay(50)
     
