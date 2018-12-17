@@ -276,7 +276,6 @@ def introscreen(introScreen, mainScreen):
 inPlay = True
 
 while inPlay:
-    
     #Enters the intro screen
     if introScreen:
         #Game over
@@ -349,7 +348,7 @@ while inPlay:
                     #if it hits floor or obstacles
                     if shape.collides(obstacles) or shape.collides(floor):
                         dropNoise.play()
-                        if shape.row < 5:
+                        if shape.row < 4:
                             mainScreen = False
                             gameOverScreen = True
                         else:
@@ -382,7 +381,7 @@ while inPlay:
         #if it hits floor or obstacles
                     if shape.collides(obstacles) or shape.collides(floor):
                         dropNoise.play()
-                        if shape.row < 5:
+                        if shape.row < 4:
                             mainScreen = False
                             gameOverScreen = True
                         else:
@@ -426,12 +425,12 @@ while inPlay:
                                 
         pygame.time.delay(50)
         slowTime += gameSpeed
-
+#Ensures the shape falls down slowly
         if slowTime % 10 == 0:
             shape.move_down()
             if shape.collides(obstacles) or shape.collides(floor):
                 dropNoise.play()
-                if shape.row < 5:
+                if shape.row < 4:
                     mainScreen = False
                     gameOverScreen = True
                 else:
@@ -461,6 +460,7 @@ while inPlay:
         ghostShape.moveToBottom(floor, obstacles)
         mainScreen, gameOverScreen, pauseScreen, font, score, lines, level, currentTime = redraw_screen(mainScreen, gameOverScreen, pauseScreen, font, score, lines, level, currentTime)
 
+#Pause screen
     if pauseScreen:
         events = pygame.event.get()
         for event in events:
@@ -471,6 +471,7 @@ while inPlay:
 
         pygame.display.update()
 
+#Game Over Screen
     if gameOverScreen:
         events = pygame.event.get()
         for event in events:
